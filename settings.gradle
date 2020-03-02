@@ -1,0 +1,2 @@
+rootProject.name='My Receipt Book'
+include ':app'
