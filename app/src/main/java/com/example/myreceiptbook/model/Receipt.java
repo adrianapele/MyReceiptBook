@@ -7,8 +7,7 @@ public class Receipt
     private String title;
     private String shortDescription;
     private String largeDescription;
-    private Image image;
-
+    private String imageUri;
 
     public String getTitle()
     {
@@ -40,13 +39,13 @@ public class Receipt
         this.largeDescription = largeDescription;
     }
 
-    public Image getImage()
+    public String getImageUri()
     {
-        return image;
+        return imageUri;
     }
 
-    public void setImage(Image image)
+    public void setImageUri(String imageUri)
     {
-        this.image = image;
+        this.imageUri = imageUri;
     }
 }
