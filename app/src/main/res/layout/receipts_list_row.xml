@@ -2,12 +2,14 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/receiptImageId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:adjustViewBounds="true"
         />
 
     <TextView
@@ -16,6 +18,7 @@
         android:layout_height="wrap_content"
         android:text="Test receipt title"
         android:layout_toRightOf="@id/receiptImageId"
+        android:layout_margin="8dp"
         />
 
     <TextView
@@ -25,6 +28,7 @@
         android:text="Test receipt short description"
         android:layout_toRightOf="@id/receiptImageId"
         android:layout_below="@id/receiptTitleId"
+        android:layout_margin="8dp"
         />
 
 </RelativeLayout>
