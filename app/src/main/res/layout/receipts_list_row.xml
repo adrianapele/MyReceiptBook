@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/receiptImageId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+    <TextView
+        android:id="@+id/receiptTitleId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test receipt title"
+        android:layout_toRightOf="@id/receiptImageId"
+        />
+
+    <TextView
+        android:id="@+id/receiptShortDescriptionId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test receipt short description"
+        android:layout_toRightOf="@id/receiptImageId"
+        android:layout_below="@id/receiptTitleId"
+        />
+
+</RelativeLayout>
