@@ -1,13 +1,18 @@
 package com.example.myreceiptbook.model;
 
-import android.media.Image;
-
 public class Receipt
 {
     private String title;
     private String shortDescription;
     private String largeDescription;
     private String imageUri;
+
+    public Receipt(String title, String shortDescription, String largeDescription, String imageUri) {
+        this.title = title;
+        this.shortDescription = shortDescription;
+        this.largeDescription = largeDescription;
+        this.imageUri = imageUri;
+    }
 
     public String getTitle()
     {

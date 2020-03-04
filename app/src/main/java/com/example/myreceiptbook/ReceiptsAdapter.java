@@ -8,19 +8,18 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myreceiptbook.model.Receipt;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ReceiptsAdapter extends RecyclerView.Adapter<ReceiptsViewHolder>
+public class ReceiptsAdapter extends MyRecyclerView.Adapter<ReceiptsViewHolder>
 {
     private Context context;
     private List<Receipt> receipts;
 
-    public ReceiptsAdapter(Context context, List<Receipt> receipts)
+    ReceiptsAdapter(Context context, List<Receipt> receipts)
     {
         this.context = context;
         this.receipts = receipts;
@@ -32,10 +31,7 @@ public class ReceiptsAdapter extends RecyclerView.Adapter<ReceiptsViewHolder>
     {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.receipts_list_row, null);
-        view.setOnClickListener((v) ->
-        {
-            Toast.makeText(context, "Item tapped", Toast.LENGTH_SHORT).show();
-        });
+        view.setOnClickListener((v) -> Toast.makeText(context, "Item tapped", Toast.LENGTH_SHORT).show());
 
         return new ReceiptsViewHolder(view);
     }
