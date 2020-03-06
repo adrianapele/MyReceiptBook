@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myreceiptbook.model.Receipt;
 import com.squareup.picasso.Picasso;
@@ -30,8 +31,7 @@ public class ReceiptsAdapter extends MyRecyclerView.Adapter<ReceiptsViewHolder>
     public ReceiptsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.receipts_list_row, null);
-        view.setOnClickListener((v) -> Toast.makeText(context, "Item tapped", Toast.LENGTH_SHORT).show());
+        View view = layoutInflater.inflate(R.layout.receipts_list_row, parent);
 
         return new ReceiptsViewHolder(view);
     }
@@ -49,6 +49,26 @@ public class ReceiptsAdapter extends MyRecyclerView.Adapter<ReceiptsViewHolder>
                 .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_launcher_background)
                 .into(holder.receiptImageView);
+
+        holder.itemView.setOnClickListener(v ->
+        {
+            openFragment(v, currentReceipt);
+        });
+    }
+
+    private void openFragment(View v, Receipt currentReceipt)
+    {
+        AppCompatActivity activity = (AppCompatActivity) context;
+        final ReceiptDetailsFragment receiptDetailsFragment = ReceiptDetailsFragment.newInstance();
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.realtiveLayoutId, receiptDetailsFragment)
+                .addToBackStack("fragment2")
+                .commit();
+
+        receiptDetailsFragment.receiptDetailsViewModel().selectRecipt(currentReceipt);
+
+        Toast.makeText(context, "Item tapped: " + currentReceipt.getTitle(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

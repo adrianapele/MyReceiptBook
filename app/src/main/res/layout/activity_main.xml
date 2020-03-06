@@ -6,39 +6,52 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.example.myreceiptbook.MyRecyclerView
-        android:id="@+id/recyclerViewId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical" />
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:id="@+id/containerId">-->
 
-    <RelativeLayout
-        android:id="@+id/emptyViewId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+<!--        <com.example.myreceiptbook.MyRecyclerView-->
+<!--            android:id="@+id/recyclerViewId"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:scrollbars="vertical" />-->
 
-        <TextView
-            android:id="@+id/emptyTitleTextId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:fontFamily="sans-serif-medium"
-            android:paddingTop="18dp"
-            android:text="You don't have any receipts yet"
-            android:textAppearance="?android:textAppearanceMedium"/>
+<!--        <RelativeLayout-->
+<!--            android:id="@+id/emptyViewId"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerInParent="true">-->
 
-        <TextView
-            android:id="@+id/emptySubtitleTextId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/emptyTitleTextId"
-            android:layout_centerHorizontal="true"
-            android:fontFamily="sans-serif"
-            android:paddingTop="8dp"
-            android:text="You can start by adding a new receipt"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="#A2AAB0"/>
-    </RelativeLayout>
+<!--            <TextView-->
+<!--                android:id="@+id/emptyTitleTextId"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_centerHorizontal="true"-->
+<!--                android:fontFamily="sans-serif-medium"-->
+<!--                android:paddingTop="18dp"-->
+<!--                android:text="You don't have any receipts yet"-->
+<!--                android:textAppearance="?android:textAppearanceMedium"/>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/emptySubtitleTextId"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@+id/emptyTitleTextId"-->
+<!--                android:layout_centerHorizontal="true"-->
+<!--                android:fontFamily="sans-serif"-->
+<!--                android:paddingTop="8dp"-->
+<!--                android:text="You can start by adding a new receipt"-->
+<!--                android:textAppearance="?android:textAppearanceSmall"-->
+<!--                android:textColor="#A2AAB0"/>-->
+<!--        </RelativeLayout>-->
+<!--    </RelativeLayout>-->
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/receiptListingFragmentId"
+            android:layout_width="match_parent"
+            android:name="com.example.myreceiptbook.ReceiptListingFragment"
+            android:layout_height="match_parent"
+            />
 
 </RelativeLayout>
