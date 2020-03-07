@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp">
 
     <ImageView
-        android:id="@+id/receiptImageId"
+        android:id="@+id/listingImageId"
         android:layout_width="150dp"
         android:layout_height="100dp"
-        android:adjustViewBounds="true"
-        />
+        android:adjustViewBounds="true" />
 
     <TextView
-        android:id="@+id/receiptTitleId"
+        android:id="@+id/listingTitleTextId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_toRightOf="@id/listingImageId"
         android:text="Test receipt title"
-        android:layout_toRightOf="@id/receiptImageId"
-        android:layout_margin="8dp"
-        />
+        android:layout_toEndOf="@id/listingImageId" />
 
     <TextView
-        android:id="@+id/receiptShortDescriptionId"
+        android:id="@+id/listingShortDescriptionTextId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Test receipt short description"
-        android:layout_toRightOf="@id/receiptImageId"
-        android:layout_below="@id/receiptTitleId"
+        android:layout_below="@id/listingTitleTextId"
         android:layout_margin="8dp"
-        />
+        android:layout_toRightOf="@id/listingImageId"
+        android:text="Test receipt short description"
+        android:layout_toEndOf="@id/listingImageId" />
 
 </RelativeLayout>

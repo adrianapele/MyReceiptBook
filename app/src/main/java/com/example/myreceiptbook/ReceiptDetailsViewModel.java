@@ -10,7 +10,7 @@ public class ReceiptDetailsViewModel extends ViewModel
 {
    private final MutableLiveData<Receipt> selectedReceipt = new MutableLiveData<>();
 
-   public void selectRecipt(Receipt receipt)
+   public void selectReceipt(Receipt receipt)
    {
        selectedReceipt.setValue(receipt);
    }

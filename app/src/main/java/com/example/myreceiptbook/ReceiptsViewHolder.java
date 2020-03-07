@@ -16,8 +16,8 @@ class ReceiptsViewHolder extends MyRecyclerView.ViewHolder
     {
         super(itemView);
 
-        this.receiptImageView = itemView.findViewById(R.id.receiptImageId);
-        this.titleTextView = itemView.findViewById(R.id.receiptTitleId);
-        this.shortDescriptionTextView = itemView.findViewById(R.id.receiptShortDescriptionId);
+        this.receiptImageView = itemView.findViewById(R.id.listingImageId);
+        this.titleTextView = itemView.findViewById(R.id.listingTitleTextId);
+        this.shortDescriptionTextView = itemView.findViewById(R.id.listingShortDescriptionTextId);
     }
 }

@@ -6,5 +6,5 @@ import com.example.myreceiptbook.model.Receipt;
 
 public interface RecyclerViewClickListener
 {
-    void onRecyclerViewItemClick(View view, Receipt recipt);
+    void onRecyclerViewItemClick(View view, Receipt receipt);
 }

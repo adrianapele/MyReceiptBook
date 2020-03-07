@@ -3,4 +3,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_receipts_yet">You don\'t have any receipts yet</string>
+    <string name="start_adding_receipts">You can start by adding a new receipt</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

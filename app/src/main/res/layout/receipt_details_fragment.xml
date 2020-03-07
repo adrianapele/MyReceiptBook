@@ -1,60 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ReceiptDetailsFragment">
 
-    <RelativeLayout
+    <!--    <ImageView-->
+    <!--        android:id="@+id/image"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="300dp"-->
+    <!--        android:adjustViewBounds="true"-->
+    <!--        android:scaleType="centerCrop"-->
+    <!--        android:layout_marginBottom="8dp"-->
+    <!--        android:src="@drawable/ic_launcher_foreground"/>-->
+
+    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+        android:id="@+id/detailsImageId"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp">
+        android:layout_height="300dp" />
 
-    <ImageView
-        android:id="@+id/image"
+    <TextView
+        android:id="@+id/detailsTitleTextId"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerInside"
-        android:layout_marginBottom="8dp" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/detailsImageId"
+        android:padding="8dp"
+        android:text="Here will be the title" />
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/image"
-            android:padding="8dp"
-            android:text="Here will be the title"/>
+    <TextView
+        android:id="@+id/detailsLongDescTextId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/detailsTitleTextId"
+        android:padding="8dp"
+        android:text="Here will be the looooooooooooooooooooooong description" />
 
-        <TextView
-            android:id="@+id/longDesc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title"
-            android:padding="8dp"
-            android:text="Here will be the looooooooooooooooooooooong description"/>
+    <Button
+        android:id="@+id/editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:text="@string/edit" />
 
-        <Button
-            android:text="Edit"
-            android:id="@+id/editButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            />
-        <Button
-            android:text="Delete"
-            android:id="@+id/deleteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/editButton"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:layout_toEndOf="@id/editButton" />
-
-    </RelativeLayout>
-</FrameLayout>
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_toEndOf="@id/editButton"
+        android:layout_toRightOf="@id/editButton"
+        android:text="@string/delete" />
+</RelativeLayout>
