@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.myreceiptbook.model.Receipt;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -50,6 +51,16 @@ public class ReceiptListingFragment extends Fragment implements RecyclerViewClic
 
         RelativeLayout emptyView = rootView.findViewById(R.id.emptyViewId);
         recyclerView.setEmptyView(emptyView);
+
+        FloatingActionButton fab = rootView.findViewById(R.id.floatingActionBtnId);
+        fab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Toast.makeText(getContext(), "Floating Action Button tapped", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         receiptDetailsViewModel = ViewModelProviders.of(getActivity()).get(ReceiptDetailsViewModel.class);
 
