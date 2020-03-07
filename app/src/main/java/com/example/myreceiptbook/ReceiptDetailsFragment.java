@@ -1,10 +1,13 @@
 package com.example.myreceiptbook;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,8 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.example.myreceiptbook.model.Receipt;
+import com.github.chrisbanes.photoview.PhotoView;
+import com.squareup.picasso.Picasso;
 
 import timber.log.Timber;
 
@@ -23,7 +27,7 @@ public class ReceiptDetailsFragment extends Fragment
 
     private ReceiptDetailsViewModel receiptDetailsViewModel;
 
-    private SubsamplingScaleImageView imageView;
+    private ImageView imageView;
     private TextView titleTextView;
     private TextView longDescTextView;
 
@@ -39,21 +43,6 @@ public class ReceiptDetailsFragment extends Fragment
         titleTextView = rootView.findViewById(R.id.detailsTitleTextId);
         longDescTextView = rootView.findViewById(R.id.detailsLongDescTextId);
         imageView = rootView.findViewById(R.id.detailsImageId);
-
-//        imageView.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-//                View mView = getLayoutInflater().inflate(R.layout.image_zoomable_layout, null);
-//                PhotoView photoView = mView.findViewById(R.id.imageView);
-//                photoView.setImageResource(R.drawable.ic_launcher_background);
-//                mBuilder.setView(mView);
-//                AlertDialog mDialog = mBuilder.create();
-//                mDialog.show();
-//            }
-//        });
 
         Timber.i("DETAILS FRAGMENT - onCreateView");
         return rootView;
@@ -76,15 +65,39 @@ public class ReceiptDetailsFragment extends Fragment
         {
             longDescTextView.setText(receipt.getLargeDescription());
             titleTextView.setText(receipt.getTitle());
-            imageView.setImage(ImageSource.resource(R.drawable.ic_launcher_foreground));
-//            Picasso.with(getContext())
-//                    .load(Uri.parse(receipt.getImageUri()) + ".png")
-//                    .placeholder(R.drawable.ic_launcher_background)
-//                    .error(R.drawable.ic_launcher_background)
-//                    .into(imageView);
+
+            final String stringImageUri = receipt.getImageUri();
+            final Uri imageUri = Uri.parse(stringImageUri);
+            Picasso.with(getContext())
+                    .load(imageUri)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .error(R.drawable.ic_launcher_background)
+                    .into(imageView);
+
+//            if (stringImageUri != null && !stringImageUri.isEmpty())
+                addImageViewOnClickListener(receipt);
         });
 
         Timber.i("DETAILS FRAGMENT - onActivityCreated");
+    }
+
+    private void addImageViewOnClickListener(Receipt receipt)
+    {
+        imageView.setOnClickListener(view -> openFullSizeImageWithPinch(receipt));
+    }
+
+    private void openFullSizeImageWithPinch(Receipt receipt)
+    {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        View imageContainerView = getLayoutInflater().inflate(R.layout.image_zoomable_layout, null);
+
+        PhotoView photoView = imageContainerView.findViewById(R.id.zoomableImageId);
+        photoView.setImageResource(R.drawable.ic_launcher_background);
+//        photoView.setImageURI(Uri.parse(receipt.getImageUri()));
+
+        alertDialogBuilder.setView(imageContainerView);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     public ReceiptDetailsViewModel receiptDetailsViewModel()
