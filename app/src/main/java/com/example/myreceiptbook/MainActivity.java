@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.myreceiptbook.fragments.ReceiptListingFragment;
+
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity
