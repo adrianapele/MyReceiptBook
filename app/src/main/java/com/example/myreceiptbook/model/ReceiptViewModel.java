@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class ReceiptViewModel extends AndroidViewModel
 {
     private ReceiptRepository repository;
     private LiveData<List<Receipt>> allReceipts;
+    private MutableLiveData<Receipt> currentSelectedReceipt = new MutableLiveData<Receipt>();
 
     public ReceiptViewModel(@NonNull Application application)
     {
@@ -19,6 +21,16 @@ public class ReceiptViewModel extends AndroidViewModel
 
         repository = new ReceiptRepository(application);
         allReceipts = repository.getAllReceipts();
+    }
+
+    public void setCurrentSelectedReceipt(Receipt receipt)
+    {
+        currentSelectedReceipt.setValue(receipt);
+    }
+
+    public LiveData<Receipt> getCurrentSelectedReceipt()
+    {
+        return currentSelectedReceipt;
     }
 
     public void insert(Receipt receipt)
