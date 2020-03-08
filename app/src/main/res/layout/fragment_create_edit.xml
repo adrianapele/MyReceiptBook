@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    tools:context=".fragments.CreateEditFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/createEditImageViewId"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:src="@drawable/ic_launcher_foreground" />
+
+        <EditText
+            android:id="@+id/createEditTitleEditTextId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/createEditImageViewId"
+            android:layout_marginTop="16dp"
+            android:hint="Title"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/createEditShortDescEditTextId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/createEditTitleEditTextId"
+            android:layout_marginTop="16dp"
+            android:hint="Short Description"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/createEditLongDescEditTextId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/createEditShortDescEditTextId"
+            android:layout_marginTop="16dp"
+            android:hint="Large Description"
+            android:inputType="textMultiLine" />
+
+    </RelativeLayout>
+
+</FrameLayout>
