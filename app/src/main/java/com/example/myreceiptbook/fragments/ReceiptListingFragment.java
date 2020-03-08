@@ -1,8 +1,11 @@
-package com.example.myreceiptbook;
+package com.example.myreceiptbook.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -16,18 +19,20 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.myreceiptbook.MyRecyclerView;
+import com.example.myreceiptbook.R;
+import com.example.myreceiptbook.ReceiptAdapter;
 import com.example.myreceiptbook.model.Receipt;
+import com.example.myreceiptbook.model.ReceiptViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.ArrayList;
 
 import timber.log.Timber;
 
-public class ReceiptListingFragment extends Fragment implements RecyclerViewClickListener
+public class ReceiptListingFragment extends Fragment implements ReceiptAdapter.RecyclerViewClickListener
 {
     public static final String LISTING_FRAGMENT_TAG = "listingFragment";
 
-    private ReceiptDetailsViewModel receiptDetailsViewModel;
+    private ReceiptViewModel receiptViewModel;
 
     public ReceiptListingFragment()
     {
@@ -40,42 +45,55 @@ public class ReceiptListingFragment extends Fragment implements RecyclerViewClic
 
         MyRecyclerView recyclerView = rootView.findViewById(R.id.recyclerViewId);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        final ArrayList<Receipt> receipts = new ArrayList<>();
-        receipts.add(new Receipt("Title1", "Short Desc1", "very very very loooooooooooooooooooooooooooooooooooooooooooooooooooooong description", ""));
-        receipts.add(new Receipt("Title2", "Short Desc2", "very loooooooooooooooooooooooooooooooooooooooooooooooooooooong description", ""));
-        receipts.add(new Receipt("Title3", "Short Desc3", "very loooooooooooooooooooooooooooooooooooooooooooooooooooooong description", ""));
-        receipts.add(new Receipt("Title4", "Short Desc4", "very loooooooooooooooooooooooooooooooooooooooooooooooooooooong description", ""));
-        receipts.add(new Receipt("Title5", "Short Desc5", "very very loooooooooooooooooooooooooooooooooooooooooooooooooooooong description", ""));
-        recyclerView.setAdapter(new ReceiptsAdapter(getContext(), receipts, this));
+        recyclerView.setHasFixedSize(true);
 
         RelativeLayout emptyView = rootView.findViewById(R.id.emptyViewId);
         recyclerView.setEmptyView(emptyView);
 
+        final ReceiptAdapter adapter = new ReceiptAdapter();
+        adapter.setOnRecyclerViewItemClickListener(this);
+        recyclerView.setAdapter(adapter);
+
+        receiptViewModel = ViewModelProviders.of(getActivity()).get(ReceiptViewModel.class);
+        receiptViewModel.getAllNotes().observe(getViewLifecycleOwner(), receipts ->
+                adapter.submitList(receipts));
+
         FloatingActionButton fab = rootView.findViewById(R.id.floatingActionBtnId);
-        fab.setOnClickListener(new View.OnClickListener()
+        fab.setOnClickListener(view ->
         {
-            @Override
-            public void onClick(View view)
-            {
-                Toast.makeText(getContext(), "Floating Action Button tapped", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(getContext(), "Floating Action Button tapped", Toast.LENGTH_SHORT).show();
+            openCreateEditFragment(view);
         });
 
-        receiptDetailsViewModel = ViewModelProviders.of(getActivity()).get(ReceiptDetailsViewModel.class);
-
         Timber.i("LISTING FRAGMENT - onCreateView");
-
         return rootView;
+    }
+
+    private void openCreateEditFragment(View view)
+    {
+        AppCompatActivity activity = (AppCompatActivity) view.getContext();
+        final FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
+        Fragment createEditFragment = supportFragmentManager.findFragmentByTag(CreateEditFragment.CREATE_EDIT_FRAGMENT_TAG);
+
+        if (createEditFragment == null)
+        {
+            createEditFragment = new CreateEditFragment();
+            ((CreateEditFragment) createEditFragment).setRequestType(CreateEditFragment.REQUEST_ADD);
+        }
+
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, createEditFragment, CreateEditFragment.CREATE_EDIT_FRAGMENT_TAG)
+                .addToBackStack(CreateEditFragment.CREATE_EDIT_FRAGMENT_TAG)
+                .commit();
     }
 
     @Override
     public void onRecyclerViewItemClick(View view, Receipt receipt)
     {
-        openFragment(view, receipt);
+        openDetailsFragment(view, receipt);
     }
 
-    private void openFragment(View v, Receipt currentReceipt)
+    private void openDetailsFragment(View v, Receipt currentReceipt)
     {
         AppCompatActivity activity = (AppCompatActivity) v.getContext();
         final FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
@@ -92,15 +110,42 @@ public class ReceiptListingFragment extends Fragment implements RecyclerViewClic
                 .addToBackStack(ReceiptDetailsFragment.DETAILS_FRAGMENT_TAG)
                 .commit();
 
-        receiptDetailsViewModel.selectReceipt(currentReceipt);
+        receiptViewModel.setCurrentSelectedReceipt(currentReceipt);
 
         Toast.makeText(getContext(), "Item tapped: " + currentReceipt.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.delete_all_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.delete_all_receipts:
+                if (receiptViewModel.getAllNotes().getValue().size() == 0)
+                    Toast.makeText(getContext(), "You don't have receipts to delete", Toast.LENGTH_SHORT).show();
+                else
+                {
+                    receiptViewModel.deleteAllNotes();
+                    Toast.makeText(getContext(), "All receipts deleted", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         Timber.i("LISTING FRAGMENT - onCreate");
     }
 
