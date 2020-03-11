@@ -1,4 +1,4 @@
-package com.example.myreceiptbook;
+package com.example.myreceiptbook.adapter;
 
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myreceiptbook.R;
 import com.example.myreceiptbook.model.Receipt;
 import com.squareup.picasso.Picasso;
 
@@ -61,7 +62,7 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.Receipts
         holder.shortDescriptionTextView.setText(currentReceipt.getShortDescription());
 
         Picasso.with(holder.itemView.getContext())
-                .load(Uri.parse(currentReceipt.getImageUri()) + ".png")
+                .load(Uri.parse(currentReceipt.getImageUri())/* + ".png"*/)
                 .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_launcher_background)
                 .into(holder.receiptImageView);

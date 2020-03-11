@@ -1,4 +1,4 @@
-package com.example.myreceiptbook;
+package com.example.myreceiptbook.adapter;
 
 import android.content.Context;
 import android.util.AttributeSet;
