@@ -19,9 +19,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.myreceiptbook.MyRecyclerView;
+import com.example.myreceiptbook.adapter.MyRecyclerView;
 import com.example.myreceiptbook.R;
-import com.example.myreceiptbook.ReceiptAdapter;
+import com.example.myreceiptbook.adapter.ReceiptAdapter;
 import com.example.myreceiptbook.model.Receipt;
 import com.example.myreceiptbook.model.ReceiptViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -85,6 +85,7 @@ public class ReceiptListingFragment extends Fragment implements ReceiptAdapter.R
                 .replace(R.id.fragment_container, createEditFragment, CreateEditFragment.CREATE_EDIT_FRAGMENT_TAG)
                 .addToBackStack(CreateEditFragment.CREATE_EDIT_FRAGMENT_TAG)
                 .commit();
+        receiptViewModel.setCurrentSelectedReceipt(null);
     }
 
     @Override

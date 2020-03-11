@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ReceiptListingFragment">
 
-    <com.example.myreceiptbook.MyRecyclerView
+    <com.example.myreceiptbook.adapter.MyRecyclerView
         android:id="@+id/recyclerViewId"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
