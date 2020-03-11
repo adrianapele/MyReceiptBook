@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -40,9 +38,10 @@ import timber.log.Timber;
 
 public class CreateEditFragment extends Fragment
 {
-    public static final String CREATE_EDIT_FRAGMENT_TAG = "createEditFragment";
-    public static final String REQUEST_ADD = "requestAdd";
-    public static final String REQUEST_EDIT = "requestEdit";
+    static final String CREATE_EDIT_FRAGMENT_TAG = "createEditFragment";
+
+    static final String REQUEST_ADD = "requestAdd";
+    static final String REQUEST_EDIT = "requestEdit";
 
     private static final String CHOOSE_PHOTO_FROM_GALLERY_OPTION = "Choose from Gallery";
     private static final String TAKE_PHOTO_OPTION = "Take Photo";
@@ -59,7 +58,6 @@ public class CreateEditFragment extends Fragment
     private ReceiptViewModel receiptViewModel;
     private String requestType;
 
-    private String currentPhotoPath;
     private Uri currentImageUri;
 
     public CreateEditFragment()
@@ -77,15 +75,15 @@ public class CreateEditFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         final View rootView = inflater.inflate(R.layout.fragment_create_edit, container, false);
-        imageView = rootView.findViewById(R.id.createEditImageViewId);
+
         titleEditText = rootView.findViewById(R.id.createEditTitleEditTextId);
         shortDescEditText = rootView.findViewById(R.id.createEditShortDescEditTextId);
         longDescEditText = rootView.findViewById(R.id.createEditLongDescEditTextId);
+        imageView = rootView.findViewById(R.id.createEditImageViewId);
+        imageView.setOnClickListener(v -> selectImage(v.getContext()));
 
         receiptViewModel = ViewModelProviders.of(getActivity()).get(ReceiptViewModel.class);
         final Receipt currentSelectedReceipt = receiptViewModel.getCurrentSelectedReceipt().getValue();
-
-        imageView.setOnClickListener(v -> selectImage(v.getContext()));
 
         if (currentSelectedReceipt != null && REQUEST_EDIT.equals(requestType))
         {
@@ -94,7 +92,7 @@ public class CreateEditFragment extends Fragment
             longDescEditText.setText(currentSelectedReceipt.getLargeDescription());
 
             Picasso.with(getContext())
-                    .load(Uri.parse(currentSelectedReceipt.getImageUri())/* + ".png"*/)
+                    .load(Uri.parse(currentSelectedReceipt.getImageUri()))
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.ic_launcher_background)
                     .into(imageView);
@@ -114,11 +112,11 @@ public class CreateEditFragment extends Fragment
         {
             final CharSequence option = options[which];
 
-            if (TAKE_PHOTO_OPTION.equals(option))
-                takePhoto();
-            else if (CHOOSE_PHOTO_FROM_GALLERY_OPTION.equals(option))
-                choosePhotoFromGallery();
-            else if (CANCEL_OPTION.equals(option))
+            if (TAKE_PHOTO_OPTION.contentEquals(option))
+                takePhoto(context);
+            else if (CHOOSE_PHOTO_FROM_GALLERY_OPTION.contentEquals(option))
+                choosePhotoFromGallery(context);
+            else if (CANCEL_OPTION.contentEquals(option))
                 dialog.dismiss();
         });
 
@@ -126,61 +124,63 @@ public class CreateEditFragment extends Fragment
         alertDialog.show();
     }
 
-    private void takePhoto()
+    private void takePhoto(Context context)
     {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null)
+        if (takePictureIntent.resolveActivity(context.getPackageManager()) != null)
         {
             File photoFile = null;
             try
             {
-                photoFile = createImageFile();
+                photoFile = createImageFile(context);
             }
             catch (IOException ex)
             {
                 Toast.makeText(getContext(), "Could not create image", Toast.LENGTH_SHORT).show();
             }
-            // Continue only if the File was successfully created
+
             if (photoFile != null)
             {
-                Uri photoURI = FileProvider.getUriForFile(getContext(),
-                        "com.example.android.fileprovider",
-                        photoFile);
+                Uri photoURI = null;
+                try
+                {
+                    photoURI = FileProvider.getUriForFile(context,
+                            "com.example.android.fileprovider",
+                            photoFile);
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    Toast.makeText(getContext(), "Could not retrieve image from internal location", Toast.LENGTH_SHORT).show();
+                }
 
-                Timber.i("Current image uri: %s", photoURI);
-                currentImageUri = photoURI;
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, TAKE_PHOTO_REQUEST);
+                if (photoURI != null)
+                {
+                    currentImageUri = photoURI;
+                    Timber.i("Current image uri: %s", photoURI);
+
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, TAKE_PHOTO_REQUEST);
+                }
             }
         }
     }
 
-    private File createImageFile() throws IOException
+    private File createImageFile(Context context) throws IOException
     {
-        // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "jpg_" + timeStamp + "_";
-        File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File imageFile = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = imageFile.getAbsolutePath();
-
-        Timber.i("Current image path: %s", currentPhotoPath);
-
-        return imageFile;
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
-    private void choosePhotoFromGallery()
+    private void choosePhotoFromGallery(Context context)
     {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        if (intent.resolveActivity(getActivity().getPackageManager()) != null)
+
+        if (intent.resolveActivity(context.getPackageManager()) != null)
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
@@ -193,15 +193,13 @@ public class CreateEditFragment extends Fragment
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
-        switch (item.getItemId())
+        if (item.getItemId() == R.id.save_receipt)
         {
-            case R.id.save_receipt:
-                saveReceipt();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+            saveReceipt();
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void saveReceipt()
@@ -210,17 +208,16 @@ public class CreateEditFragment extends Fragment
         final String shortDesc = shortDescEditText.getText().toString();
         final String longDesc = longDescEditText.getText().toString();
 
-        final String imagePath = currentImageUri.toString();
-
         if (title.trim().isEmpty() || shortDesc.trim().isEmpty()
                 || longDesc.trim().isEmpty()
-                || imagePath.trim().isEmpty())
+                || currentImageUri == null)
         {
             Toast.makeText(getContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
         final Receipt currentSelectedReceipt = receiptViewModel.getCurrentSelectedReceipt().getValue();
+        final String imagePath = currentImageUri.toString();
 
         if (REQUEST_ADD.equals(requestType) && currentSelectedReceipt == null)
         {
@@ -247,7 +244,7 @@ public class CreateEditFragment extends Fragment
         getActivity().onBackPressed();
     }
 
-    public void setRequestType(String requestType)
+    void setRequestType(String requestType)
     {
         this.requestType = requestType;
     }
@@ -267,8 +264,9 @@ public class CreateEditFragment extends Fragment
         }
         else if (requestCode == TAKE_PHOTO_REQUEST && resultCode == Activity.RESULT_OK)
         {
-            Bitmap photo =  BitmapFactory.decodeFile(currentPhotoPath);
-            imageView.setImageBitmap(photo);
+            Picasso.with(getContext())
+                    .load(currentImageUri)
+                    .into(imageView);
         }
     }
 }
