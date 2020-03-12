@@ -55,8 +55,7 @@ public class ReceiptListingFragment extends Fragment implements ReceiptAdapter.R
         recyclerView.setAdapter(adapter);
 
         receiptViewModel = ViewModelProviders.of(getActivity()).get(ReceiptViewModel.class);
-        receiptViewModel.getAllNotes().observe(getViewLifecycleOwner(), receipts ->
-                adapter.submitList(receipts));
+        receiptViewModel.getAllNotes().observe(getViewLifecycleOwner(), adapter::submitList);
 
         FloatingActionButton fab = rootView.findViewById(R.id.floatingActionBtnId);
         fab.setOnClickListener(view ->

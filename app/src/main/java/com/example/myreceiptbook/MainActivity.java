@@ -77,13 +77,4 @@ public class MainActivity extends AppCompatActivity
         Timber.i("MAIN ACTIVITY - onAttachFragment: %s", fragment.getClass());
         Timber.i("MAIN ACTIVITY - onAttachFragment: %s", fragment.getTag());
     }
-
-//    @Override
-//    public void onBackPressed()
-//    {
-//        if (getSupportFragmentManager().getBackStackEntryCount() > 0)
-//            getSupportFragmentManager().popBackStack();
-//        else
-//            finish();
-//    }
 }

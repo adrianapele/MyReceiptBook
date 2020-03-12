@@ -1,10 +1,14 @@
 package com.example.myreceiptbook.fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -49,6 +53,8 @@ public class CreateEditFragment extends Fragment
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int TAKE_PHOTO_REQUEST = 2;
+
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
 
     private ImageView imageView;
     private EditText titleEditText;
@@ -113,7 +119,7 @@ public class CreateEditFragment extends Fragment
             final CharSequence option = options[which];
 
             if (TAKE_PHOTO_OPTION.contentEquals(option))
-                takePhoto(context);
+                takePhotoWithPermissions(context);
             else if (CHOOSE_PHOTO_FROM_GALLERY_OPTION.contentEquals(option))
                 choosePhotoFromGallery(context);
             else if (CANCEL_OPTION.contentEquals(option))
@@ -122,6 +128,55 @@ public class CreateEditFragment extends Fragment
 
         final AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE)
+        {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                takePhoto(getContext());
+            else
+                Toast.makeText(getContext(), "Camera Permission Not Granted", Toast.LENGTH_SHORT).show();
+        }
+        else
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void takePhotoWithPermissions(Context context)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            final int cameraPermission = context.checkSelfPermission(Manifest.permission.CAMERA);
+            if (cameraPermission != PackageManager.PERMISSION_GRANTED)
+            {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA))
+                {
+                    new AlertDialog.Builder(context)
+                            .setMessage("You need to allow access to Camera in order to be able to take photos")
+                            .setPositiveButton("OKAY", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+                                }
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .create()
+                            .show();
+                    return;
+                }
+                else
+                {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+                    return;
+                }
+            }
+        }
+
+        takePhoto(context);
     }
 
     private void takePhoto(Context context)
