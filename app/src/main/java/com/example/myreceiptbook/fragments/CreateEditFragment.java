@@ -135,7 +135,7 @@ public class CreateEditFragment extends Fragment
     {
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE)
         {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 takePhoto(getContext());
             else
                 Toast.makeText(getContext(), "Camera Permission Not Granted", Toast.LENGTH_SHORT).show();

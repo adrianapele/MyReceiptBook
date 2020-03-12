@@ -12,7 +12,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:layout_marginBottom="8dp"
-            android:src="@drawable/ic_launcher_foreground"/>
+            />
 
     <TextView
         android:id="@+id/detailsTitleTextId"
