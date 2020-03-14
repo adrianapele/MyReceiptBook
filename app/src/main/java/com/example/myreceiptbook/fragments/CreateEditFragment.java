@@ -31,7 +31,6 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.myreceiptbook.R;
 import com.example.myreceiptbook.model.Receipt;
 import com.example.myreceiptbook.model.ReceiptViewModel;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +54,7 @@ public class CreateEditFragment extends Fragment
     private static final int TAKE_PHOTO_REQUEST = 2;
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
+    private static final int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 110;
 
     private ImageView imageView;
     private EditText titleEditText;
@@ -96,12 +96,7 @@ public class CreateEditFragment extends Fragment
             titleEditText.setText(currentSelectedReceipt.getTitle());
             shortDescEditText.setText(currentSelectedReceipt.getShortDescription());
             longDescEditText.setText(currentSelectedReceipt.getLargeDescription());
-
-            Picasso.with(getContext())
-                    .load(Uri.parse(currentSelectedReceipt.getImageUri()))
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .error(R.drawable.ic_launcher_background)
-                    .into(imageView);
+            imageView.setImageURI(Uri.parse(currentSelectedReceipt.getImageUri()));
         }
 
         if (REQUEST_EDIT.equals(requestType))
@@ -126,7 +121,7 @@ public class CreateEditFragment extends Fragment
             if (TAKE_PHOTO_OPTION.contentEquals(option))
                 takePhotoWithPermissions(context);
             else if (CHOOSE_PHOTO_FROM_GALLERY_OPTION.contentEquals(option))
-                choosePhotoFromGallery(context);
+                choosePhotoFromGalleryWithPermissions(context);
             else if (CANCEL_OPTION.contentEquals(option))
                 dialog.dismiss();
         });
@@ -214,9 +209,38 @@ public class CreateEditFragment extends Fragment
         return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
+    private void choosePhotoFromGalleryWithPermissions(Context context)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            final int readExternalStoragePermission = context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (readExternalStoragePermission != PackageManager.PERMISSION_GRANTED)
+            {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE))
+                {
+                    new AlertDialog.Builder(context)
+                            .setMessage("You need to allow access to your storage in order to be able to take and choose photos")
+                            .setPositiveButton("OKAY", ((dialog, which) -> requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE)))
+                            .setNegativeButton("Cancel", null)
+                            .create()
+                            .show();
+
+                    return;
+                }
+                else
+                {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE);
+                    return;
+                }
+            }
+        }
+
+        choosePhotoFromGallery(context);
+    }
+
     private void choosePhotoFromGallery(Context context)
     {
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         if (intent.resolveActivity(context.getPackageManager()) != null)
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
@@ -230,27 +254,38 @@ public class CreateEditFragment extends Fragment
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
                 && data != null && data.getData() != null)
         {
-            Uri selectedImage =  data.getData();
+            Uri selectedImage = data.getData();
 
             if (selectedImage != null)
             {
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getActivity().getContentResolver().query(selectedImage,
-                        filePathColumn, null, null, null);
-
-                cursor.moveToFirst();
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String picturePath = cursor.getString(columnIndex);
-                cursor.close();
-
-                imagePath = picturePath;
-                imageView.setImageURI(Uri.parse(imagePath));
+                String path = getPathFromURI(selectedImage);
+                if (path != null)
+                {
+                    File file = new File(path);
+                    imagePath = Uri.fromFile(file).toString();
+                    imageView.setImageURI(Uri.parse(imagePath));
+                }
             }
+            Toast.makeText(getContext(), "Could not load image", Toast.LENGTH_SHORT).show();
         }
         else if (requestCode == TAKE_PHOTO_REQUEST && resultCode == Activity.RESULT_OK)
         {
             imageView.setImageURI(Uri.parse(imagePath));
         }
+    }
+
+    public String getPathFromURI(Uri contentUri)
+    {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getActivity().getContentResolver().query(contentUri, proj, null, null, null);
+
+        if (cursor.moveToFirst())
+        {
+            int column_index = cursor.getColumnIndex(proj[0]);
+            return cursor.getString(column_index);
+        }
+        cursor.close();
+        return null;
     }
 
     @Override
@@ -262,6 +297,13 @@ public class CreateEditFragment extends Fragment
                 takePhoto(getContext());
             else
                 Toast.makeText(getContext(), "Camera Permission Not Granted", Toast.LENGTH_SHORT).show();
+        }
+        else if (requestCode == READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE)
+        {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                choosePhotoFromGallery(getContext());
+            else
+                Toast.makeText(getContext(), "Read External Storage Permission Not Granted", Toast.LENGTH_SHORT).show();
         }
         else
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
