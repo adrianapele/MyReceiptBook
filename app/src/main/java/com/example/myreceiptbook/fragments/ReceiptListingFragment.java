@@ -1,6 +1,5 @@
 package com.example.myreceiptbook.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,14 +18,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.myreceiptbook.adapter.MyRecyclerView;
 import com.example.myreceiptbook.R;
+import com.example.myreceiptbook.adapter.MyRecyclerView;
 import com.example.myreceiptbook.adapter.ReceiptAdapter;
 import com.example.myreceiptbook.model.Receipt;
 import com.example.myreceiptbook.model.ReceiptViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import timber.log.Timber;
+import java.util.List;
 
 public class ReceiptListingFragment extends Fragment implements ReceiptAdapter.RecyclerViewClickListener
 {
@@ -58,13 +57,9 @@ public class ReceiptListingFragment extends Fragment implements ReceiptAdapter.R
         receiptViewModel.getAllNotes().observe(getViewLifecycleOwner(), adapter::submitList);
 
         FloatingActionButton fab = rootView.findViewById(R.id.floatingActionBtnId);
-        fab.setOnClickListener(view ->
-        {
-            Toast.makeText(getContext(), "Floating Action Button tapped", Toast.LENGTH_SHORT).show();
-            openCreateEditFragment(view);
-        });
+        fab.setOnClickListener(this::openCreateEditFragment);
 
-        Timber.i("LISTING FRAGMENT - onCreateView");
+        getActivity().setTitle("My Receipts");
         return rootView;
     }
 
@@ -100,9 +95,7 @@ public class ReceiptListingFragment extends Fragment implements ReceiptAdapter.R
         Fragment detailsFragment = supportFragmentManager.findFragmentByTag(ReceiptDetailsFragment.DETAILS_FRAGMENT_TAG);
 
         if (detailsFragment == null)
-        {
             detailsFragment = new ReceiptDetailsFragment();
-        }
 
         supportFragmentManager
                 .beginTransaction()
@@ -111,8 +104,13 @@ public class ReceiptListingFragment extends Fragment implements ReceiptAdapter.R
                 .commit();
 
         receiptViewModel.setCurrentSelectedReceipt(currentReceipt);
+    }
 
-        Toast.makeText(getContext(), "Item tapped: " + currentReceipt.getTitle(), Toast.LENGTH_SHORT).show();
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -124,98 +122,17 @@ public class ReceiptListingFragment extends Fragment implements ReceiptAdapter.R
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
-        switch (item.getItemId())
+        if (item.getItemId() == R.id.delete_all_receipts)
         {
-            case R.id.delete_all_receipts:
-                if (receiptViewModel.getAllNotes().getValue().size() == 0)
-                    Toast.makeText(getContext(), "You don't have receipts to delete", Toast.LENGTH_SHORT).show();
-                else
-                {
-                    receiptViewModel.deleteAllNotes();
-                    Toast.makeText(getContext(), "All receipts deleted", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+            final List<Receipt> receipts = receiptViewModel.getAllNotes().getValue();
+            if (receipts != null && receipts.size() == 0)
+                Toast.makeText(getContext(), "You don't have receipts to delete", Toast.LENGTH_SHORT).show();
+            else {
+                receiptViewModel.deleteAllNotes();
+                Toast.makeText(getContext(), "All receipts deleted", Toast.LENGTH_SHORT).show();
+            }
+            return true;
         }
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        Timber.i("LISTING FRAGMENT - onCreate");
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context)
-    {
-        super.onAttach(context);
-        Timber.i("LISTING FRAGMENT - onAttach");
-    }
-
-    @Override
-    public void onAttachFragment(@NonNull Fragment childFragment)
-    {
-        super.onAttachFragment(childFragment);
-        Timber.i("LISTING FRAGMENT - onAttachFragment: t%s", childFragment.getTag());
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        Timber.i("LISTING FRAGMENT - onActivityCreated");
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        Timber.i("LISTING FRAGMENT - onStart");
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        Timber.i("LISTING FRAGMENT - onResume");
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-        Timber.i("LISTING FRAGMENT - onPause");
-    }
-
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-        Timber.i("LISTING FRAGMENT - onStop");
-    }
-
-    @Override
-    public void onDestroyView()
-    {
-        super.onDestroyView();
-        Timber.i("LISTING FRAGMENT - onDestroyView");
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-        Timber.i("LISTING FRAGMENT - onDestroy");
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        Timber.i("LISTING FRAGMENT - onDetach");
+        return super.onOptionsItemSelected(item);
     }
 }
