@@ -1,47 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
-
-<!--    <androidx.cardview.widget.CardView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content">-->
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:padding="4dp"
-        android:background="@drawable/border">
+        android:background="@drawable/border"
+        android:padding="4dp">
 
+        <TextView
+            android:id="@+id/listingTitleTextId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:text="Test receipt title" />
 
-
-    <TextView
-        android:id="@+id/listingTitleTextId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-
-
-        android:text="Test receipt title" />
-
-    <TextView
-        android:id="@+id/listingShortDescriptionTextId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/listingTitleTextId"
-        android:layout_margin="8dp"
-
-        android:text="Test receipt short description" />
+        <TextView
+            android:id="@+id/listingShortDescriptionTextId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/listingTitleTextId"
+            android:layout_margin="4dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="Test receipt short description" />
 
         <ImageView
             android:id="@+id/listingImageId"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
+            android:layout_height="300dp"
             android:layout_below="@id/listingShortDescriptionTextId"
-            />
+            android:layout_margin="4dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/sadbox2" />
     </RelativeLayout>
-<!--    </androidx.cardview.widget.CardView>-->
 </LinearLayout>
