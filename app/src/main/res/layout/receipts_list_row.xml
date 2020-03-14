@@ -1,32 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginEnd="8dp">
+    >
+
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:layout_margin="8dp"
+        android:padding="4dp"
+        android:background="@drawable/border">
 
-    <ImageView
-        android:id="@+id/listingImageId"
-        android:layout_width="150dp"
-        android:layout_height="100dp"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="true"/>
+
 
     <TextView
         android:id="@+id/listingTitleTextId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:layout_toEndOf="@id/listingImageId"
-        android:layout_toRightOf="@id/listingImageId"
+
+
         android:text="Test receipt title" />
 
     <TextView
@@ -35,8 +32,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/listingTitleTextId"
         android:layout_margin="8dp"
-        android:layout_toEndOf="@id/listingImageId"
-        android:layout_toRightOf="@id/listingImageId"
+
         android:text="Test receipt short description" />
+
+        <ImageView
+            android:id="@+id/listingImageId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:layout_below="@id/listingShortDescriptionTextId"
+            />
     </RelativeLayout>
-</RelativeLayout>
+<!--    </androidx.cardview.widget.CardView>-->
+</LinearLayout>

@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myreceiptbook.R;
 import com.example.myreceiptbook.model.Receipt;
-import com.squareup.picasso.Picasso;
 
 public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.ReceiptsViewHolder>
 {
@@ -60,17 +59,7 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.Receipts
 
         holder.titleTextView.setText(currentReceipt.getTitle());
         holder.shortDescriptionTextView.setText(currentReceipt.getShortDescription());
-
-        Picasso.with(holder.itemView.getContext())
-                .load(Uri.parse(currentReceipt.getImageUri())/* + ".png"*/)
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_launcher_background)
-                .into(holder.receiptImageView);
-    }
-
-    public Receipt getReceiptAt(int position)
-    {
-        return getItem(position);
+        holder.receiptImageView.setImageURI(Uri.parse(currentReceipt.getImageUri()));
     }
 
     class ReceiptsViewHolder extends MyRecyclerView.ViewHolder

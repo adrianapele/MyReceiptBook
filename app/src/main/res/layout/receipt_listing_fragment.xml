@@ -37,6 +37,14 @@
             android:text="@string/start_adding_receipts"
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="#A2AAB0" />
+
+        <ImageView
+            android:id="@+id/imageContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/emptySubtitleTextId"
+            android:src="@drawable/sadbox2"/>
+
     </RelativeLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

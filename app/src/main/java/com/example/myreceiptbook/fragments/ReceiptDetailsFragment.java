@@ -1,7 +1,6 @@
 package com.example.myreceiptbook.fragments;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,9 +23,6 @@ import com.example.myreceiptbook.R;
 import com.example.myreceiptbook.model.Receipt;
 import com.example.myreceiptbook.model.ReceiptViewModel;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.squareup.picasso.Picasso;
-
-import timber.log.Timber;
 
 public class ReceiptDetailsFragment extends Fragment
 {
@@ -55,10 +51,10 @@ public class ReceiptDetailsFragment extends Fragment
         imageView = rootView.findViewById(R.id.detailsImageId);
 
         editButton = rootView.findViewById(R.id.editButton);
-        editButton.setOnClickListener(v -> openCreateEditFragment(v));
+        editButton.setOnClickListener(this::openCreateEditFragment);
 
         deleteButton = rootView.findViewById(R.id.deleteButton);
-        deleteButton.setOnClickListener(v -> openDeleteDialog(v));
+        deleteButton.setOnClickListener(this::openDeleteDialog);
 
         receiptViewModel = ViewModelProviders.of(getActivity()).get(ReceiptViewModel.class);
         receiptViewModel.getCurrentSelectedReceipt().observe(getViewLifecycleOwner(), new Observer<Receipt>()
@@ -71,22 +67,15 @@ public class ReceiptDetailsFragment extends Fragment
 
                 titleTextView.setText(receipt.getTitle());
                 longDescTextView.setText(receipt.getLargeDescription());
+                imageView.setImageURI(Uri.parse(receipt.getImageUri()));
 
-                final String stringImageUri = receipt.getImageUri();
-                final Uri imageUri = Uri.parse(stringImageUri);
-                Picasso.with(getContext())
-                        .load(imageUri)
-                        .placeholder(R.drawable.ic_launcher_background)
-                        .error(R.drawable.ic_launcher_background)
-                        .into(imageView);
 
 //            if (stringImageUri != null && !stringImageUri.isEmpty())
                 addImageViewOnClickListener(receipt);
             }
         });
 
-
-        Timber.i("DETAILS FRAGMENT - onCreateView");
+        getActivity().setTitle("Receipt Details");
         return rootView;
     }
 
@@ -136,13 +125,6 @@ public class ReceiptDetailsFragment extends Fragment
         alertDialog.show();
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        Timber.i("DETAILS FRAGMENT - onActivityCreated");
-    }
-
     private void addImageViewOnClickListener(Receipt receipt)
     {
         imageView.setOnClickListener(view -> openFullSizeImageWithPinch(receipt));
@@ -159,75 +141,5 @@ public class ReceiptDetailsFragment extends Fragment
         alertDialogBuilder.setView(imageContainerView);
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-    }
-
-    @Override
-    public void onAttachFragment(@NonNull Fragment childFragment)
-    {
-        super.onAttachFragment(childFragment);
-        Timber.i("DETAILS FRAGMENT - onAttachFragment: %s", childFragment.getTag());
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        Timber.i("DETAILS FRAGMENT - onCreate");
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context)
-    {
-        super.onAttach(context);
-        Timber.i("DETAILS FRAGMENT - onAttach");
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        Timber.i("DETAILS FRAGMENT - onStart");
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        Timber.i("DETAILS FRAGMENT - onResume");
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-        Timber.i("DETAILS FRAGMENT - onPause");
-    }
-
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-        Timber.i("DETAILS FRAGMENT - onStop");
-    }
-
-    @Override
-    public void onDestroyView()
-    {
-        super.onDestroyView();
-        Timber.i("DETAILS FRAGMENT - onDestroyView");
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-        Timber.i("DETAILS FRAGMENT - onDestroy");
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        Timber.i("DETAILS FRAGMENT - onDetach");
     }
 }

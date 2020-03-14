@@ -4,9 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,7 +64,7 @@ public class CreateEditFragment extends Fragment
     private ReceiptViewModel receiptViewModel;
     private String requestType;
 
-    private Uri currentImageUri;
+    private String imagePath;
 
     public CreateEditFragment()
     {
@@ -104,6 +104,11 @@ public class CreateEditFragment extends Fragment
                     .into(imageView);
         }
 
+        if (REQUEST_EDIT.equals(requestType))
+            getActivity().setTitle("Edit Receipt");
+        else
+            getActivity().setTitle("Add Receipt");
+
         return rootView;
     }
 
@@ -130,20 +135,6 @@ public class CreateEditFragment extends Fragment
         alertDialog.show();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE)
-        {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                takePhoto(getContext());
-            else
-                Toast.makeText(getContext(), "Camera Permission Not Granted", Toast.LENGTH_SHORT).show();
-        }
-        else
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
     private void takePhotoWithPermissions(Context context)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -155,14 +146,7 @@ public class CreateEditFragment extends Fragment
                 {
                     new AlertDialog.Builder(context)
                             .setMessage("You need to allow access to Camera in order to be able to take photos")
-                            .setPositiveButton("OKAY", new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
-                                }
-                            })
+                            .setPositiveButton("OKAY", (dialog, which) -> requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE))
                             .setNegativeButton("Cancel", null)
                             .create()
                             .show();
@@ -182,6 +166,7 @@ public class CreateEditFragment extends Fragment
     private void takePhoto(Context context)
     {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
         if (takePictureIntent.resolveActivity(context.getPackageManager()) != null)
         {
             File photoFile = null;
@@ -210,8 +195,8 @@ public class CreateEditFragment extends Fragment
 
                 if (photoURI != null)
                 {
-                    currentImageUri = photoURI;
-                    Timber.i("Current image uri: %s", photoURI);
+                    imagePath = photoURI.toString();
+                    Timber.i("Current imagePath: %s", imagePath);
 
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, TAKE_PHOTO_REQUEST);
@@ -231,12 +216,55 @@ public class CreateEditFragment extends Fragment
 
     private void choosePhotoFromGallery(Context context)
     {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         if (intent.resolveActivity(context.getPackageManager()) != null)
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
+                && data != null && data.getData() != null)
+        {
+            Uri selectedImage =  data.getData();
+
+            if (selectedImage != null)
+            {
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+                        filePathColumn, null, null, null);
+
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String picturePath = cursor.getString(columnIndex);
+                cursor.close();
+
+                imagePath = picturePath;
+                imageView.setImageURI(Uri.parse(imagePath));
+            }
+        }
+        else if (requestCode == TAKE_PHOTO_REQUEST && resultCode == Activity.RESULT_OK)
+        {
+            imageView.setImageURI(Uri.parse(imagePath));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE)
+        {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                takePhoto(getContext());
+            else
+                Toast.makeText(getContext(), "Camera Permission Not Granted", Toast.LENGTH_SHORT).show();
+        }
+        else
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -265,14 +293,13 @@ public class CreateEditFragment extends Fragment
 
         if (title.trim().isEmpty() || shortDesc.trim().isEmpty()
                 || longDesc.trim().isEmpty()
-                || currentImageUri == null)
+                || imagePath.isEmpty())
         {
             Toast.makeText(getContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
         final Receipt currentSelectedReceipt = receiptViewModel.getCurrentSelectedReceipt().getValue();
-        final String imagePath = currentImageUri.toString();
 
         if (REQUEST_ADD.equals(requestType) && currentSelectedReceipt == null)
         {
@@ -302,26 +329,5 @@ public class CreateEditFragment extends Fragment
     void setRequestType(String requestType)
     {
         this.requestType = requestType;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
-                && data != null && data.getData() != null)
-        {
-            final Uri imageUri = data.getData();
-            Picasso.with(getContext())
-                    .load(imageUri)
-                    .into(imageView);
-        }
-        else if (requestCode == TAKE_PHOTO_REQUEST && resultCode == Activity.RESULT_OK)
-        {
-            Picasso.with(getContext())
-                    .load(currentImageUri)
-                    .into(imageView);
-        }
     }
 }
