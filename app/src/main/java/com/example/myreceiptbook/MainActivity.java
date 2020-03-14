@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_container, new ReceiptListingFragment(), ReceiptListingFragment.LISTING_FRAGMENT_TAG)
+                .replace(R.id.fragment_container, new ReceiptListingFragment(), ReceiptListingFragment.LISTING_FRAGMENT_TAG)
                 .commitNow();
     }
 }
