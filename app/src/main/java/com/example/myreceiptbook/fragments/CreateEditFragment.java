@@ -96,7 +96,10 @@ public class CreateEditFragment extends Fragment
             titleEditText.setText(currentSelectedReceipt.getTitle());
             shortDescEditText.setText(currentSelectedReceipt.getShortDescription());
             longDescEditText.setText(currentSelectedReceipt.getLargeDescription());
-            imageView.setImageURI(Uri.parse(currentSelectedReceipt.getImageUri()));
+            final String imageUri = currentSelectedReceipt.getImageUri();
+            imageView.setImageURI(Uri.parse(imageUri));
+
+            imagePath = imageUri;
         }
 
         if (REQUEST_EDIT.equals(requestType))
@@ -333,11 +336,14 @@ public class CreateEditFragment extends Fragment
         final String shortDesc = shortDescEditText.getText().toString();
         final String longDesc = longDescEditText.getText().toString();
 
-        if (title.trim().isEmpty() || shortDesc.trim().isEmpty()
-                || longDesc.trim().isEmpty()
-                || imagePath.isEmpty())
+        if (title.trim().isEmpty() || shortDesc.trim().isEmpty() || longDesc.trim().isEmpty())
         {
             Toast.makeText(getContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if (imagePath == null || imagePath.isEmpty())
+        {
+            Toast.makeText(getContext(), "Please add an image", Toast.LENGTH_SHORT).show();
             return;
         }
 

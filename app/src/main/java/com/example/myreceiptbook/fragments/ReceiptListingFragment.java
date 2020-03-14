@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -32,6 +33,7 @@ public class ReceiptListingFragment extends Fragment implements ReceiptAdapter.R
     public static final String LISTING_FRAGMENT_TAG = "listingFragment";
 
     private ReceiptViewModel receiptViewModel;
+    private MyRecyclerView myRecyclerView;
 
     public ReceiptListingFragment()
     {
@@ -42,16 +44,17 @@ public class ReceiptListingFragment extends Fragment implements ReceiptAdapter.R
     {
         final View rootView = inflater.inflate(R.layout.receipt_listing_fragment, container, false);
 
-        MyRecyclerView recyclerView = rootView.findViewById(R.id.recyclerViewId);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
+        myRecyclerView = rootView.findViewById(R.id.recyclerViewId);
+        myRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        myRecyclerView.setHasFixedSize(true);
+        myRecyclerView.setNestedScrollingEnabled(false);
 
         RelativeLayout emptyView = rootView.findViewById(R.id.emptyViewId);
-        recyclerView.setEmptyView(emptyView);
+        myRecyclerView.setEmptyView(emptyView);
 
         final ReceiptAdapter adapter = new ReceiptAdapter();
         adapter.setOnRecyclerViewItemClickListener(this);
-        recyclerView.setAdapter(adapter);
+        myRecyclerView.setAdapter(adapter);
 
         receiptViewModel = ViewModelProviders.of(getActivity()).get(ReceiptViewModel.class);
         receiptViewModel.getAllNotes().observe(getViewLifecycleOwner(), adapter::submitList);
@@ -97,8 +100,9 @@ public class ReceiptListingFragment extends Fragment implements ReceiptAdapter.R
         if (detailsFragment == null)
             detailsFragment = new ReceiptDetailsFragment();
 
-        supportFragmentManager
-                .beginTransaction()
+        final FragmentTransaction fragmentTransaction = supportFragmentManager .beginTransaction();
+        fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        fragmentTransaction
                 .replace(R.id.fragment_container, detailsFragment, ReceiptDetailsFragment.DETAILS_FRAGMENT_TAG)
                 .addToBackStack(ReceiptDetailsFragment.DETAILS_FRAGMENT_TAG)
                 .commit();
@@ -134,5 +138,13 @@ public class ReceiptListingFragment extends Fragment implements ReceiptAdapter.R
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        myRecyclerView.setAdapter(null);
+        myRecyclerView = null;
     }
 }

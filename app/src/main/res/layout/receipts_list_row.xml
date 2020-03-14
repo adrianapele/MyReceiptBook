@@ -15,8 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:text="Test receipt title" />
+            android:text="@string/test_receipt_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <TextView
             android:id="@+id/listingShortDescriptionTextId"
@@ -24,8 +24,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/listingTitleTextId"
             android:layout_margin="4dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="Test receipt short description" />
+            android:text="@string/test_receipt_short_description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <ImageView
             android:id="@+id/listingImageId"
@@ -33,7 +33,8 @@
             android:layout_height="300dp"
             android:layout_below="@id/listingShortDescriptionTextId"
             android:layout_margin="4dp"
+            android:contentDescription="@string/test_image_content_desc"
             android:scaleType="fitXY"
-            android:src="@drawable/sadbox2" />
+            android:src="@drawable/no_image_available" />
     </RelativeLayout>
 </LinearLayout>

@@ -10,8 +10,7 @@
         android:id="@+id/recyclerViewId"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        android:scrollbars="vertical" />
+        android:layout_margin="8dp" />
 
     <RelativeLayout
         android:id="@+id/emptyViewId"
@@ -44,7 +43,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/emptySubtitleTextId"
-            android:src="@drawable/sadbox2"/>
+            android:src="@drawable/sadbox2"
+            android:contentDescription="@string/listing_image_content_desc"/>
 
     </RelativeLayout>
 

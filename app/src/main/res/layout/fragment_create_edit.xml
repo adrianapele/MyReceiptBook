@@ -1,49 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
+    android:padding="4dp"
     tools:context=".fragments.CreateEditFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/createEditImageViewId"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            />
+            android:layout_margin="4dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/no_image_available"
+            android:contentDescription="@string/image_content_desc" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         <EditText
             android:id="@+id/createEditTitleEditTextId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/createEditImageViewId"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:inputType="text"
+            android:hint="@string/title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:importantForAutofill="no" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
             android:layout_marginTop="16dp"
-            android:hint="Title"
-            android:inputType="text" />
+            android:text="@string/short_description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         <EditText
             android:id="@+id/createEditShortDescEditTextId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/createEditTitleEditTextId"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:inputType="text"
+            android:hint="@string/short_description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:importantForAutofill="no" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
             android:layout_marginTop="16dp"
-            android:hint="Short Description"
-            android:inputType="text" />
+            android:text="@string/large_description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         <EditText
             android:id="@+id/createEditLongDescEditTextId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/createEditShortDescEditTextId"
-            android:layout_marginTop="16dp"
-            android:hint="Large Description"
-            android:inputType="textMultiLine" />
-
-    </RelativeLayout>
-
-</FrameLayout>
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:inputType="textMultiLine"
+            android:hint="@string/large_description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:importantForAutofill="no" />
+    </LinearLayout>
+</ScrollView>

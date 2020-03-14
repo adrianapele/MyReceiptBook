@@ -1,54 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    android:padding="4dp"
     tools:context=".fragments.ReceiptDetailsFragment">
 
-        <ImageView
-            android:id="@+id/detailsImageId"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/test"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            android:layout_marginBottom="8dp"
-            />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/detailsTitleTextId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/detailsImageId"
-        android:padding="8dp"
-        android:text="Here will be the title" />
+            <ImageView
+                android:id="@+id/detailsImageId"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_margin="4dp"
+                android:contentDescription="@string/todo"
+                android:scaleType="fitXY"
+                android:src="@drawable/no_image_available" />
 
-    <TextView
-        android:id="@+id/detailsLongDescTextId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/detailsTitleTextId"
-        android:padding="8dp"
-        android:text="Here will be the looooooooooooooooooooooong description" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
-    <Button
-        android:id="@+id/editButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:text="@string/edit" />
+            <TextView
+                android:id="@+id/detailsTitleTextId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="16dp"
+                android:hint="@string/title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-    <Button
-        android:id="@+id/deleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_toEndOf="@id/editButton"
-        android:layout_toRightOf="@id/editButton"
-        android:text="@string/delete" />
-</RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/large_description"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+            <TextView
+                android:id="@+id/detailsLongDescTextId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="16dp"
+                android:hint="@string/large_description"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/test"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/editButton"
+                style="@style/TextAppearance.AppCompat.Widget.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/edit" />
+
+            <Button
+                android:id="@+id/deleteButton"
+                style="@style/TextAppearance.AppCompat.Widget.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/delete" />
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

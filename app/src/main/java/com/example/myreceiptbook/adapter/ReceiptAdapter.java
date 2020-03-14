@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.myreceiptbook.R;
 import com.example.myreceiptbook.model.Receipt;
 
@@ -59,7 +60,10 @@ public class ReceiptAdapter extends ListAdapter<Receipt, ReceiptAdapter.Receipts
 
         holder.titleTextView.setText(currentReceipt.getTitle());
         holder.shortDescriptionTextView.setText(currentReceipt.getShortDescription());
-        holder.receiptImageView.setImageURI(Uri.parse(currentReceipt.getImageUri()));
+        final Uri uri = Uri.parse(currentReceipt.getImageUri());
+
+        Glide.with(holder.itemView).load(uri).into(holder.receiptImageView);
+//        holder.receiptImageView.setImageURI(uri);
     }
 
     class ReceiptsViewHolder extends MyRecyclerView.ViewHolder
