@@ -1,7 +1,6 @@
 package com.example.myreceiptbook.fragments;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -102,23 +101,12 @@ public class ReceiptDetailsFragment extends Fragment
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
         alertDialogBuilder.setTitle("Delete");
         alertDialogBuilder.setMessage("Do you want to delete this receipt?");
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.dismiss();
-            }
-        });
-
-        alertDialogBuilder.setPositiveButton("OKAY", new DialogInterface.OnClickListener()
+        alertDialogBuilder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        alertDialogBuilder.setPositiveButton("OKAY", (dialog, which) ->
         {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                receiptViewModel.delete(receiptViewModel.getCurrentSelectedReceipt().getValue());
-                receiptViewModel.setCurrentSelectedReceipt(null);
-                ReceiptDetailsFragment.this.getActivity().onBackPressed();
-            }
+            receiptViewModel.delete(receiptViewModel.getCurrentSelectedReceipt().getValue());
+            receiptViewModel.setCurrentSelectedReceipt(null);
+            ReceiptDetailsFragment.this.getActivity().onBackPressed();
         });
 
         final AlertDialog alertDialog = alertDialogBuilder.create();

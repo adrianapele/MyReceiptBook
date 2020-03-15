@@ -144,7 +144,8 @@ public class CreateEditFragment extends Fragment
                 {
                     new AlertDialog.Builder(context)
                             .setMessage("You need to allow access to Camera in order to be able to take photos")
-                            .setPositiveButton("OKAY", (dialog, which) -> requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE))
+                            .setPositiveButton("OKAY", (dialog, which) ->
+                                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE))
                             .setNegativeButton("Cancel", null)
                             .create()
                             .show();
@@ -261,7 +262,7 @@ public class CreateEditFragment extends Fragment
 
             if (selectedImage != null)
             {
-                String path = getPathFromURI(selectedImage);
+                String path = getPathFromUri(selectedImage);
                 if (path != null)
                 {
                     File file = new File(path);
@@ -269,7 +270,8 @@ public class CreateEditFragment extends Fragment
                     imageView.setImageURI(Uri.parse(imagePath));
                 }
             }
-            Toast.makeText(getContext(), "Could not load image", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getContext(), "Could not load image", Toast.LENGTH_SHORT).show();
         }
         else if (requestCode == TAKE_PHOTO_REQUEST && resultCode == Activity.RESULT_OK)
         {
@@ -277,14 +279,16 @@ public class CreateEditFragment extends Fragment
         }
     }
 
-    public String getPathFromURI(Uri contentUri)
+    public String getPathFromUri(Uri contentUri)
     {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getActivity().getContentResolver().query(contentUri, proj, null, null, null);
+        String[] selection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getActivity()
+                .getContentResolver()
+                .query(contentUri, selection, null, null, null);
 
         if (cursor.moveToFirst())
         {
-            int column_index = cursor.getColumnIndex(proj[0]);
+            int column_index = cursor.getColumnIndex(selection[0]);
             return cursor.getString(column_index);
         }
         cursor.close();

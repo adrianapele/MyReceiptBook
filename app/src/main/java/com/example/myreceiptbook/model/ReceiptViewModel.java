@@ -13,7 +13,7 @@ public class ReceiptViewModel extends AndroidViewModel
 {
     private ReceiptRepository repository;
     private LiveData<List<Receipt>> allReceipts;
-    private MutableLiveData<Receipt> currentSelectedReceipt = new MutableLiveData<Receipt>();
+    private MutableLiveData<Receipt> currentSelectedReceipt = new MutableLiveData<>();
 
     public ReceiptViewModel(@NonNull Application application)
     {
